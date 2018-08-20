@@ -1,18 +1,22 @@
 <template>
   <div class="posts">
-    <h1>Add Post</h1>
+    <h1>Edit Post</h1>
       <div class="form">
         <div>
+          <p>{{post.date}}</p>
           <input type="text" placeholder="Date" v-model="post.date">
         </div>
         <div>
+          <p>{{post.timeWindow}}</p>
           <input type="text" placeholder="Creneau" v-model="post.timeWindow">
         </div>
         <div>
+          <p>{{post.witness}}</p>
           <input type="text" placeholder="Alerteur" v-model="post.witness">
         </div>
         <div>
-            <select v-model="post.animal" name="animal" placeholder="tes">
+            <p>{{post.animal}}</p>
+            <select v-model="post.animal" name="animal">
               <option value="" disabled selected>Animal</option>
               <option value="chat">Chat</option>
               <option value="chien">Chien</option>
@@ -21,12 +25,15 @@
             </select>
           </div>
         <div>
+          <p>{{post.color}}</p>
           <input type="text" placeholder="Couleur" v-model="post.color">
         </div>
         <div>
+          <p>{{post.adress}}</p>
           <input type="text" placeholder="Adresse" v-model="post.adress">
         </div>
         <div>
+        <p>{{post.state}}</p>
          <select v-model="post.state" name="etat">
             <option value="" disabled selected>Etat</option>
             <option value="très faible">Très faible</option>
@@ -37,6 +44,7 @@
         </div>
         <div>
           <p>Collier</p>
+          <p>{{post.collar}}</p>
           <input type="checkbox" name="Collier" v-model="post.collar">
         </div>
         <div>
@@ -49,46 +57,45 @@
 <script>
 import PostsService from '@/services/PostsService'
 export default {
-  name: 'NewPost',
+  name: 'EditPost',
   data () {
     return {
-      post: {}
-      // description: ''
+      title: '',
+      description: ''
     }
   },
+  mounted () {
+    this.getPost()
+  },
   methods: {
-    async addPost () {
-      this.post.animal = this.post.animal.toLowerCase()
-      await PostsService.addPost(this.post)
+    async getPost () {
+      const response = await PostsService.getPost({
+        id: this.$route.params.id
+      })
+      this.title = response.data.title
+      this.description = response.data.description
+    },
+    async updatePost () {
+      await PostsService.updatePost({
+        id: this.$route.params.id,
+        title: this.title,
+        description: this.description
+      })
       this.$router.push({ name: 'Posts' })
     }
   }
 }
 </script>
 <style type="text/css">
-.form {
-  margin: auto;
-  max-width: 600px;
-  width : 80%;
-}
-.form input, .form textarea , .form select{
+.form input, .form textarea {
   width: 500px;
   padding: 10px;
   border: 1px solid #e0dede;
   outline: none;
   font-size: 12px;
 }
-.form input[type="checkbox"]{
-  width: 10%;
-}
 .form div {
   margin: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.form div *{
-  flex-grow: 1;
 }
 .app_post_btn {
   background: #4d7ef7;

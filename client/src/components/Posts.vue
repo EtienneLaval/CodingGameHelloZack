@@ -1,29 +1,41 @@
 <template>
   <div class="posts">
-    <h1>Posts</h1>
+    <h1>Signalements</h1>
     <div v-if="posts.length > 0" class="table-wrap">
       <div>
-        <router-link v-bind:to="{ name: 'NewPost' }" class="">Add Post</router-link>
+        <router-link v-bind:to="{ name: 'NewPost' }" class="">Ajuter un signalement</router-link>
       </div>
       <table>
         <tr>
-          <td>Title</td>
-          <td width="550">Description</td>
-          <td width="100" align="center">Action</td>
+          <td>Date</td>
+          <td>Creneau</td>
+          <td>Alerteur</td>
+          <td>Animal</td>
+          <td>Couleur</td>
+          <td>Adresse</td>
+          <td>Etat</td>
+          <td>collar</td>
+          <td>Action</td>
         </tr>
-        <tr v-for="post in posts" :key="post.id">
-          <td>{{ post.title }}</td>
-          <td>{{ post.description }}</td>
+          <tr v-for="post in posts" :key="post.id">
+          <td>{{ post.date }}</td>
+          <td>{{ post.timeWindow }}</td>
+          <td>{{ post.witness }}</td>
+          <td>{{ post.animal }}</td>
+          <td>{{ post.color }}</td>
+          <td>{{ post.adress }}</td>
+          <td>{{ post.state }}</td>
+          <td>{{ post.collar }}</td>
           <td align="center">
-            <router-link v-bind:to="{ name: 'EditPost', params: { id: post._id } }">Edit</router-link> |
-            <a href="#">Delete</a>
+            <router-link v-bind:to="{ name: 'EditPost', params: { id: post._id } }">Editer</router-link> |
+            <a href="#" @click="deletePost(post._id)">Delete</a>
           </td>
         </tr>
       </table>
     </div>
     <div v-else>
-      There are no posts.. Lets add one now <br /><br />
-      <router-link v-bind:to="{ name: 'NewPost' }" class="add_post_link">Add Post</router-link>
+      Aucun animal n'est à signaler <br /><br />
+      <router-link v-bind:to="{ name: 'NewPost' }" class="add_post_link">Ajuter un signalement</router-link>
     </div>
   </div>
 </template>
@@ -44,6 +56,11 @@ export default {
     async getPosts () {
       const response = await PostsService.fetchPosts()
       this.posts = response.data.posts
+    },
+    async deletePost (id) {
+      await PostsService.deletePost(id)
+      this.$router.push({ name: 'Posts' })
+      this.getPosts()
     }
   }
 }
@@ -62,6 +79,7 @@ table thead {
 }
 table tr td {
   padding: 10px;
+  width:10%;
 }
 table tr:nth-child(odd) {
   background: #f2f2f2;

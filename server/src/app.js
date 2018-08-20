@@ -32,6 +32,12 @@ app.get('/posts', (req, res) => {
     })
   }).sort({_id:-1})
 })
+app.get('/posts/:id', (req, res) => {
+  Post.findById(req.params.id, 'date, timeWindow, witness, animal, color, adress, state, collar', function (error, post) {
+    if (error) { console.error(error); }
+      res.send(post)
+  })
+})
 
 app.post('/posts', (req, res) => {
   var new_post = new Post(req.body)
