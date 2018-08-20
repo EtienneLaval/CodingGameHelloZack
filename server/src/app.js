@@ -2,8 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
-var Post = require("../models/posts");
-
+const fs = require('fs')
+const Post = require("../models/posts")
+const config = require("../config")
 
 
 const app = express()
@@ -23,9 +24,8 @@ db.once("open", function(callback){
 });
 
 
-
 app.get('/posts', (req, res) => {
-  Post.find({}, 'title description', function (error, posts) {
+  Post.find({}, function (error, posts) {
     if (error) { console.error(error); }
     res.send({
       posts: posts
@@ -34,21 +34,41 @@ app.get('/posts', (req, res) => {
 })
 
 app.post('/posts', (req, res) => {
-  var db = req.db;
-  var title = req.body.title;
-  var description = req.body.description;
-  var new_post = new Post({
-    title: title,
-    description: description
-  })
-
+  var new_post = new Post(req.body)
   new_post.save(function (error) {
     if (error) {
       console.log(error)
     }
     res.send({
       success: true,
-      message: 'Post saved successfully!'
+      message: 'Post saved successfully!',
+      etpi : new_post
+    })
+  })
+})
+
+app.put('/posts/:id', (req, res) => {
+  Post.findById(req.params.id, 'date, timeWindow, witness, animal, color, adress, state, collar', function (error, post) {
+    if (error) { console.error(error); }
+    post.save(function (error) {
+      if (error) {
+        console.log(error)
+      }
+      res.send({
+        success: true
+      })
+    })
+  })
+})
+app.delete('/posts/:id', (req, res) => {
+  var db = req.db;
+  Post.remove({
+    _id: req.params.id
+  }, function(err, post){
+    if (err)
+      res.send(err)
+    res.send({
+      success: true
     })
   })
 })
