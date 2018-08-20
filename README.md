@@ -1,6 +1,8 @@
 # CodingGameHelloZack
 Installation : 
+
 installer docker CE https://docs.docker.com/install/linux/docker-ce/ubuntu/
+
 faire $ docker-compose build
 
 Lancement : 
